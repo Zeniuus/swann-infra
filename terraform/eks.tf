@@ -34,7 +34,7 @@ module "eks" {
       max_capacity     = 2
       min_capacity     = 1
 
-      instance_types = ["t2.micro"]
+      instance_types = ["t2.small"]
       capacity_type  = "ON_DEMAND"
       update_config = {
         max_unavailable_percentage = 50 # or set `max_unavailable`
