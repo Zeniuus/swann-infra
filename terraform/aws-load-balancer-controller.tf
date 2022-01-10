@@ -283,3 +283,13 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller" {
   policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
   role       = aws_iam_role.aws_load_balancer_controller.name
 }
+
+resource "aws_acm_certificate" "api_suhwan_dev" {
+  domain_name       = "*.api.suhwan.dev"
+  subject_alternative_names = ["*.greenbelt.api.suhwan.dev"]
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
