@@ -22,3 +22,8 @@ output "node_groups" {
   description = "Outputs from node groups"
   value       = module.eks.node_groups
 }
+
+output "db_password" {
+  value = random_password.main_db_password.result
+  sensitive = true
+}
