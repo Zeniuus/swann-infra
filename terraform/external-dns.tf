@@ -64,6 +64,18 @@ resource "aws_route53_zone" "api_suhwan_dev" {
   name = "api.suhwan.dev"
 }
 
+resource "aws_route53_zone" "api_staircrusher_club" {
+  name = "api.staircrusher.club"
+}
+
+resource "aws_route53_zone" "api_test_staircrusher_club" {
+  name = "api.test.staircrusher.club"
+}
+
+resource "aws_route53_zone" "admin_staircrusher_club" {
+  name = "admin.staircrusher.club"
+}
+
 output "external_dns_hosted_zone_id" {
   value = aws_route53_zone.api_suhwan_dev.zone_id
 }

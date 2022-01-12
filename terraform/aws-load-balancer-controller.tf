@@ -293,3 +293,21 @@ resource "aws_acm_certificate" "api_suhwan_dev" {
     create_before_destroy = true
   }
 }
+
+resource "aws_acm_certificate" "star_staircrusher_club" {
+  domain_name       = "*.staircrusher.club"
+  subject_alternative_names = ["*.test.staircrusher.club"]
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+output "api_suhwan_dev_certificate_arn" {
+  value = aws_acm_certificate.api_suhwan_dev.arn
+}
+
+output "star_staircrusher_club_certificate_arn" {
+  value = aws_acm_certificate.star_staircrusher_club.arn
+}

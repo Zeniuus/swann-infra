@@ -49,16 +49,6 @@ resource "aws_security_group" "main_db" {
   description = "db instance sg"
   vpc_id      = data.aws_vpc.default.id
 
-  ingress {
-    description      = "Allow server connection"
-    from_port        = 3306
-    to_port          = 3306
-    protocol         = "tcp"
-    security_groups  = [
-      "sg-01ae603128d2f2651" // 계단정복지도 서버 인스턴스들
-    ]
-  }
-
   egress {
     description      = "Egress"
     from_port        = 0
@@ -66,8 +56,6 @@ resource "aws_security_group" "main_db" {
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
   }
-
-  depends_on = [module.eks]
 }
 
 resource "aws_security_group_rule" "main_db_allow_eks_worker_node" {
@@ -80,5 +68,24 @@ resource "aws_security_group_rule" "main_db_allow_eks_worker_node" {
   source_security_group_id = "sg-08c24c379522b57fc" # FIXME: 원래는 module.eks.node_security_group_id이어야 하는데, 이 output이 없다고 해서 임시로 하드코딩함
   protocol                 = "tcp"
 
-  depends_on = [module.eks]
+  depends_on = [aws_vpc_peering_connection.eks_vpc_default_vpc]
+}
+
+resource "aws_vpc_peering_connection" "eks_vpc_default_vpc" {
+  peer_vpc_id   = var.default_vpc_id
+  vpc_id        = module.vpc.vpc_id
+  auto_accept   = true
+}
+
+resource "aws_route" "eks_vpc_to_default_vpc" {
+  for_each = toset(module.vpc.private_route_table_ids)
+  route_table_id = each.key
+  destination_cidr_block = data.aws_vpc.default.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.eks_vpc_default_vpc.id
+}
+
+resource "aws_route" "default_vpc_to_eks_vpc" {
+  route_table_id = data.aws_vpc.default.main_route_table_id
+  destination_cidr_block = module.vpc.vpc_cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.eks_vpc_default_vpc.id
 }

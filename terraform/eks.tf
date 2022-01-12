@@ -30,9 +30,9 @@ module "eks" {
 
   node_groups = {
     worker = {
-      desired_capacity = 1
-      max_capacity     = 2
-      min_capacity     = 1
+      desired_capacity = 2
+      max_capacity     = 3
+      min_capacity     = 2
 
       instance_types = ["t2.small"]
       capacity_type  = "ON_DEMAND"
